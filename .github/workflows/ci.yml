@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          # gitleaks-action diffs the PR's base commit against its head on
+          # pull_request events; a shallow (depth=1) checkout only has the
+          # head commit and fails with "unknown revision" as soon as a PR
+          # carries more than one commit.
+          fetch-depth: 0
 
       - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
         with:

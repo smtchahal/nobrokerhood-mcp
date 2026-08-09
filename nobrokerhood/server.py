@@ -2,9 +2,12 @@
 NoBrokerHood MCP server — exposes gate pre-approval as MCP tools.
 
 Call ``build_server()`` for a plain stdio server (the common case — spawned as
-a subprocess by Claude Desktop / Code), or pass FastMCP kwargs (``host``,
-``port``, ``streamable_http_path``, ``token_verifier``, ``auth``, ...) to
-self-host over HTTP with your own authorization layer in front.
+a subprocess by Claude Desktop / Code), or pass MCPServer constructor kwargs
+(``token_verifier``, ``auth``, ...) to self-host with your own authorization
+layer in front. Transport-level options (``host``, ``port``,
+``streamable_http_path``, ``stateless_http``, ...) are no longer accepted
+here — pass them to ``.run(transport=..., **kwargs)`` on the returned server
+instead (see mcp 2.0's migration guide).
 
 Rule: never write to stdout in stdio mode — it corrupts the JSON-RPC framing.
 All logging goes to stderr only.
@@ -15,7 +18,7 @@ import sys
 from datetime import datetime, timedelta, timezone
 from typing import Literal
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from nobrokerhood import KNOWN_COMPANIES, NobrokerhoodClient, pick_fields
 from nobrokerhood.exceptions import NobrokerhoodError
@@ -369,22 +372,23 @@ _TOOLS = (
 )
 
 
-def register_tools(mcp: FastMCP) -> None:
-    """Register all NoBrokerHood tools on an existing FastMCP instance."""
+def register_tools(mcp: MCPServer) -> None:
+    """Register all NoBrokerHood tools on an existing MCPServer instance."""
     for fn in _TOOLS:
         mcp.tool()(fn)
 
 
-def build_server(**fastmcp_kwargs) -> FastMCP:
-    """Build a FastMCP server with all NoBrokerHood tools registered.
+def build_server(**mcpserver_kwargs) -> MCPServer:
+    """Build an MCPServer with all NoBrokerHood tools registered.
 
-    Pass no arguments for a plain stdio server. Pass FastMCP constructor
-    kwargs (``host``, ``port``, ``streamable_http_path``, ``stateless_http``,
-    ``token_verifier``, ``auth``, ...) to self-host over HTTP with your own
+    Pass no arguments for a plain stdio server. Pass MCPServer constructor
+    kwargs (``token_verifier``, ``auth``, ...) to self-host with your own
     authorization layer in front — this function does not implement or assume
-    any particular auth scheme.
+    any particular auth scheme. Transport-level options (``host``, ``port``,
+    ``streamable_http_path``, ``stateless_http``, ...) belong on
+    ``.run(transport=..., **kwargs)`` instead, not here.
     """
-    mcp = FastMCP("nobrokerhood", **fastmcp_kwargs)
+    mcp = MCPServer("nobrokerhood", **mcpserver_kwargs)
     register_tools(mcp)
     return mcp
 
