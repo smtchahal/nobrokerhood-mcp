@@ -10,18 +10,18 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
-    "requests>=2.32",
-    "mcp[cli]>=2.0",
+    "requests~=2.32",
+    "mcp[cli]~=2.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.8",
-    "pytest>=8.0",
-    "pytest-asyncio>=0.24",
-    "pre-commit>=4.0",
-    "vulture>=2.13",
-    "pip-audit>=2.7",
+    "ruff~=0.8.0",
+    "pytest~=8.0",
+    "pytest-asyncio~=0.24.0",
+    "pre-commit~=4.0",
+    "vulture~=2.13",
+    "pip-audit~=2.7",
 ]
 
 [project.scripts]
