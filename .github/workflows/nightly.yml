@@ -1,0 +1,31 @@
+name: nightly dependency check
+
+on:
+  schedule:
+    # 03:17 UTC daily -- off the hour to dodge the scheduled-workflow
+    # thundering herd at :00.
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+        with:
+          python-version: "3.12"
+          # Deliberately no `cache: pip`. This job exists to catch a fresh
+          # dependency resolution breaking us with no code change on our
+          # side (e.g. a dependency publishing a breaking major release) --
+          # reusing a cached resolution would defeat the point.
+
+      - name: Install dependencies (fresh resolve, no cache)
+        run: pip install --no-cache-dir -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Test
+        run: pytest
