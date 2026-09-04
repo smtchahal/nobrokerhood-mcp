@@ -90,7 +90,12 @@ class NobrokerhoodClient:
         Pre-approve a delivery from *company*.
 
         Args:
-            company:        Delivery company name, e.g. "Zepto", "Dominos".
+            company:        Delivery company name, e.g. "Zepto", "Dominos", or
+                            the literal "Any" to admit deliveries from any/
+                            every brand under one approval window — this is
+                            not a validation shortcut, it's the exact value
+                            the resident app itself sends for its built-in
+                            "any company" option.
             duration_hours: How long the window stays open.  Defaults to the
                             known default for the company, or 1 hour.
             in_time:        When the window opens.  Defaults to now (rounded
