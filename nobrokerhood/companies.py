@@ -15,6 +15,11 @@ QUICK = 1.0  # Quick commerce / 10-min delivery (Zepto, Blinkit, Instamart …)
 # Keys must match the normalised form used in KNOWN_COMPANIES (lowercase, no
 # spaces/hyphens/underscores).
 COMPANY_DISPLAY_NAMES: dict[str, str] = {
+    # Confirmed live against the API 2026-09-04: the resident app's own "any
+    # company" pre-approval sends the literal company string "Any" (not a
+    # blank/empty string — that's accepted too, but renders as a nameless
+    # entry rather than the app's own generic option).
+    "any": "Any",
     "zepto": "Zepto",
     "blinkit": "Blinkit",
     "swiggy": "Swiggy",
@@ -125,6 +130,9 @@ COMPANY_DISPLAY_NAMES: dict[str, str] = {
 # None means the company is recognised but has no sensible default — the caller
 # must supply an explicit duration.
 KNOWN_COMPANIES: dict[str, _Hours] = {
+    # ── Generic "any company" pre-approval (1 h) ────────────────────────────
+    # Not brand-specific — lets any delivery/visitor through under one entry.
+    "any": QUICK,
     # ── Quick commerce / 10-min delivery (1 h) ─────────────────────────────
     "zepto": QUICK,
     "blinkit": QUICK,

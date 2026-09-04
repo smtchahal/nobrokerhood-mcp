@@ -133,15 +133,24 @@ def pre_approve(
     Use this whenever the user wants to let a delivery in: "pre-approve zepto",
     "let the dominos guy in for 4 hours", "approve amazon till midnight".
     "Pre-approve for the day" means until midnight (23:59) of the current day.
+    If the user does NOT name a specific brand — "approve any delivery",
+    "let any courier in", "pre-approve deliveries for 2 hours" with no brand
+    given — pass company="Any". This does not just skip validation: it tells
+    the gate guard to admit a delivery from ANY company/brand under this one
+    approval window, not a single named brand. It's the exact literal value
+    the resident app itself sends for its own built-in "any company" option
+    (confirmed against the live API).
 
     Call get_user_multiprofile_info first to obtain the apartment_id if not
     already known; skip if the user explicitly provided it.
 
     Args:
-      company: Brand name, e.g. "Zepto", "Blinkit", "Dominos", "Amazon".
-        Case/space/hyphen insensitive. ~100 brands have built-in defaults; see
-        the `known_companies` tool for the full list. Unknown brands default
-        to a 1-hour window.
+      company: Brand name, e.g. "Zepto", "Blinkit", "Dominos", "Amazon", or
+        the literal "Any" to admit deliveries from any/every brand under one
+        approval window (use this whenever no specific brand was named).
+        Case/space/hyphen insensitive. ~100 brands have built-in defaults;
+        see the `known_companies` tool for the full list. Unknown brands
+        default to a 1-hour window.
       apartment_id: The apartment ID to pre-approve the visit for. Fetch from
         get_user_multiprofile_info → data.apartments.apartment.id.
       duration_hours: Override the per-company default window length (in hours).

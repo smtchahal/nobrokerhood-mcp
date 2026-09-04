@@ -143,7 +143,8 @@ def build_parser() -> argparse.ArgumentParser:
     pa = sub.add_parser("pre-approve", help="Pre-approve a delivery")
     pa.add_argument(
         "company",
-        help=f"Delivery company (e.g. zepto, blinkit, dominos). "
+        help=f"Delivery company (e.g. zepto, blinkit, dominos), or 'any' to admit "
+        f"deliveries from any/every brand under one approval window. "
         f"Known companies with default windows: {', '.join(KNOWN_COMPANIES)}",
     )
     pa.add_argument(
